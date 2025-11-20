@@ -1,0 +1,13 @@
+1. Add your resume in data/ in pdf format and remembers its name
+
+2.Copy the path of the project where you have saved it
+
+3.Paste the path in cmd using cd your_saved_folder_path
+
+4.Activate your virtual environment by venv\Scripts\activate
+
+5.Now execute the program using python main.py
+
+6.Enter your resume pdf name along with job description 
+
+7.The program will analysis your resume according to the job description and will give the accurate percentage, skills required for job and many more
