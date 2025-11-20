@@ -10,31 +10,31 @@ It extracts resume content, compares it with the job description, performs skill
 
 Recruiters often face challenges such as:
 
-- ⏳ Time-consuming manual screening  
-- ❌ Human bias  
-- 🧩 Skill mismatch between resume & job description  
-- 🔍 Inconsistent evaluation  
-- 📄 ATS systems failing due to formatting issues  
+- ⏳ Time-consuming manual screening 
+- ❌ Human bias 
+- 🧩 Skill mismatch between resume & job description 
+- 🔍 Inconsistent evaluation 
+- 📄 ATS systems failing due to formatting issues 
 
 **Smart Resume Reviewer Agent** solves these problems by providing:
 
-✔ AI-based resume understanding  
-✔ Contextual skill matching  
-✔ Candidate scoring  
-✔ Recruiter-style summary generation  
+✔ AI-based resume understanding 
+✔ Contextual skill matching 
+✔ Candidate scoring 
+✔ Recruiter-style summary generation 
 
 ---
 
 ## 🤖 2. Why Agents?
 
-A single AI model cannot perform the entire HR evaluation workflow.  
+A single AI model cannot perform the entire HR evaluation workflow. 
 This system uses **multiple specialized agents**, similar to an HR team:
 
-1. Resume Parsing Agent  
-2. Job Description Analyzer Agent  
-3. Skill Matching & Gap Analysis Agent  
-4. Scoring Agent  
-5. Summary Agent  
+1. Resume Parsing Agent 
+2. Job Description Analyzer Agent 
+3. Skill Matching & Gap Analysis Agent 
+4. Scoring Agent 
+5. Summary Agent 
 
 Agents communicate with each other and complete the workflow intelligently.
 
@@ -66,35 +66,12 @@ smart-resume-reviewer/
 
 ---
 
-## 🤖 4. Agent Responsibilities
+## ⚙️ 4. Key Features
 
-### **Resume Parser Agent**
-- Extracts text from PDF/DOCX  
-- Identifies experience, skills, education, projects  
-
-### **Job Description Analyzer**
-- Extracts required skills  
-- Maps job responsibilities  
-
-### **Skill Matcher**
-- Compares resume vs job description  
-- Finds missing or weak skills  
-- Produces similarity score  
-
-### **Scoring Agent**
-Scores based on:
-- Skill match  
-- Experience relevance  
-- Education  
-- Projects  
-- Formatting (ATS compatibility)  
-
-### **Summary Agent**
-Generates:
-- Strengths  
-- Weaknesses  
-- Gaps  
-- Final recommendation  
+* **Dynamic Role Matching:** The system prompts the user for the **Job Title** and **Job Description** at runtime, allowing it to evaluate candidates for any role, from 'Senior Python Developer' to 'Full Stack Developer'.
+* **Weighted Scoring:** The final match score integrates keyword matching, experience points, and ATS compliance factors for a holistic evaluation.
+* **Robust Input Handling:** The script uses `sys.stdin.read()` to reliably accept large, multi-line job descriptions pasted directly into the terminal.
+* **Privacy Focus:** A `.gitignore` ensures that sensitive resume data (`data/*.pdf`) and transient output (`review_report.json`) are never committed to the repository.
 
 ---
 
@@ -102,16 +79,16 @@ Generates:
 
 ### Step-by-step Process
 
-1️⃣ User provides:  
-- Resume (PDF or text)  
-- Job description (text or JSON)
+1️⃣ User runs `main.py` and provides:
+- Resume filename (e.g., `candidate_a.pdf`)
+- Job description text
 
-2️⃣ Agents start working:  
-- Resume Parser → extracts sections  
-- JD Analyzer → finds required skills  
-- Skill Matcher → compares and scores  
-- Scoring Agent → generates final score  
-- Summary Agent → produces recruiter-style summary  
+2️⃣ Agents start working:
+- **JD Analyzer** extracts required skills (e.g., Python, React, AWS).
+- **Resume Parser** extracts all text and skills from the PDF.
+- **Skill Matcher** compares the two lists and calculates the similarity score.
+- **Scoring Agent** computes the final score based on all factors.
+- **Summary Agent** generates a final, actionable summary for the recruiter.  
 
 ### Example Output
 
@@ -178,3 +155,7 @@ AI & Software Development Enthusiast
 
 ---
 
+=======
+# smart-resume-reviewer-agent
+The Smart Resume Reviewer is a multi-agent system that scores resumes against any job description, providing a match percentage, skill gap analysis, and a recruiter summary. It uses specialized agents for parsing, keyword analysis, skill matching, and final score calculation.
+>>>>>>> 73a28fbe386ee62b2c51b48ea196c4df29dccf80
