@@ -7,26 +7,20 @@ class SummaryAgent:
     - Extracted resume insights
     """
 
-    # Renamed the second argument to final_score for consistency with main.py
     def generate_summary(self, job_title, final_score, missing_keywords, resume_text):
         """
         Creates a human-readable summary for the recruiter.
         """
 
-        # Extract small insights from resume (simple rule-based)
         experience_years = self.estimate_experience(resume_text) 
         top_skills = self.extract_top_skills(resume_text)
 
-        # ----------------------------------------------------------------------
-        # FIX: DEFINE THE MISSING SKILLS FORMATTING HERE
-        # ----------------------------------------------------------------------
+      
         if missing_keywords:
-            # Create the bulleted list string
-            # Starts with a newline + bullet, then joins the rest with newline + bullet
+           
             missing_skills_formatted = "\n* " + "\n* ".join(missing_keywords)
         else:
             missing_skills_formatted = "None — strong alignment"
-        # ----------------------------------------------------------------------
         
         summary = f"""
 📌 Recruiter Summary — Smart Resume Reviewer Agent
@@ -53,7 +47,6 @@ and additional project details.
     # Simple logic functions (works offline)
     # ---------------------------------------------------------------------
 
-    # FIX: Corrected return values to be strings for better formatting in the summary.
     def estimate_experience(self, text) -> str:
         """
         Basic heuristic:

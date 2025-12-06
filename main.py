@@ -1,149 +1,83 @@
-import json
-import sys 
-
+import streamlit as st
 from agents.resume_parser import ResumeParser
-from agents.jd_analyzer import JDAnalyzer
+from agents.jd_analyzer import get_keywords_for_job
 from agents.skill_matcher import SkillMatcher
 from agents.scoring_agent import ScoringAgent
 from agents.summary_agent import SummaryAgent
 
+st.set_page_config(page_title="Smart Resume Reviewer", page_icon="🔍")
 
-def main():
-    print("\n=== Smart Resume Reviewer ===\n")
+st.title("Smart Resume Reviewer 🔍")
+st.write("Upload your resume and enter a Job Title to check how well it matches.")
 
-    # -----------------------------
-    # 1. Setup & User Input
-    # -----------------------------
-    print("Loading data...")
-    print("\n--- Input Setup ---")
+job_title = st.text_input("Enter Job Title (e.g., Full Stack Developer, Data Analyst, Python Developer)")
 
-    # NEW: Get the resume filename from the user
-    resume_filename = input("Enter the Resume Filename (e.g., my_resume.pdf): ")
-    # Construct the full path, assuming all resumes are in the 'data' folder
-    resume_path = f"data/{resume_filename}"
+uploaded_file = st.file_uploader("Upload Resume (PDF only)", type=["pdf"])
 
-    print("\n--- Job Description Input ---")
+if uploaded_file and job_title:
     
-    # Get the Job Title from the user
-    job_title = input("Enter the target Job Title: ")
+  
+    with open("temp_resume.pdf", "wb") as f:
+        f.write(uploaded_file.getbuffer())
+
     
-    # Get the Job Description Text from the user (handles multi-line paste)
-    print("Paste the Job Description text below. Press Ctrl+Z then Enter to finish:")
+    parser = ResumeParser()
     
-    # Use sys.stdin.read() for robust multi-line paste handling
-    try:
-        jd_text = sys.stdin.read()
-    except EOFError:
-        jd_text = ""
-    
-    jd_text = jd_text.strip()
-    
-    # Create the JD data structure, which is needed later for the final report
-    jd_data = {"title": job_title, "description": jd_text, "company": "User Input"}
-    
-    # Error check the inputs
-    if not jd_text.strip():
-        print("❌ ERROR: Job description cannot be empty. Exiting.")
-        return
+  
+    resume_data = parser.parse_resume("temp_resume.pdf")
 
-    # -----------------------------
-    # 2. Initialize all agents
-    # -----------------------------
-    resume_parser = ResumeParser()
-    jd_analyzer = JDAnalyzer()
-    skill_matcher = SkillMatcher()
-    score_agent = ScoringAgent()
-    summary_agent = SummaryAgent()
+    if not resume_data or resume_data.get("error"):
+        st.error("Could not parse your resume. Please try another file.")
+        st.stop()
 
-    # -----------------------------
-    # Step 1 → Parse Resume
-    # -----------------------------
-    print(f"\nParsing Resume from: {resume_path}...")
-    # NOTE: The resume_path is now dynamic based on user input
-    resume_data = resume_parser.parse_resume(resume_path)
-
-    if "error" in resume_data:
-        print("❌ Resume parsing failed:", resume_data["error"])
-        # Important: The user may have entered a wrong filename here.
-        return
-    
-    # Store the raw text for the Scoring and Summary agents later
-    resume_raw_text = resume_data.get("raw_text", "")
-    if not resume_raw_text:
-         print("❌ Resume parsing failed: Could not extract raw text.")
-         return
-
-    # -----------------------------
-    # Step 2 → Analyze Job Description (Uses jd_text from user input)
-    # -----------------------------
-    print("Analyzing Job Description...")
-    jd_result = jd_analyzer.analyze(jd_text)
-    jd_keywords = jd_result["keywords"]
-
-    # -----------------------------
-    # Step 3 → Match Skills
-    # -----------------------------
-    print("Matching Skills...")
-
-    resume_skills = resume_data.get("skills", [])
-    
-    match_result = skill_matcher.match(jd_keywords, resume_skills)
-
-    matched = match_result["matched_skills"]
-    match_score = match_result["score"]
-    
-    # Calculate missing keywords for subsequent agents and limit the list size
-    all_missing = list(set(jd_keywords) - set(matched))
-    missing_keywords = all_missing[:15]
-
-    # -----------------------------
-    # Step 4 → Calculate Score
-    # -----------------------------
-    print("Calculating Score...")
-    
-    final_score, scoring_breakdown = score_agent.calculate_score(
-        match_score, 
-        missing_keywords, 
-        resume_raw_text
-    )
-    
-    # -----------------------------
-    # Step 5 → Generate Summary
-    # -----------------------------
-    print("Generating Summary...")
-    
-    summary = summary_agent.generate_summary(
-        job_title, 
-        final_score,
-        missing_keywords, 
-        resume_raw_text
-    )
-
-    # -----------------------------
-    # Final Output
-    # -----------------------------
-    print("\n=== REVIEW SUMMARY ===\n")
-    print(summary)
-
-    # Save final report
-    report = {
-        "job_title": job_title,
-        "company": jd_data.get("company", "N/A"),
-        "resume_details": resume_data,
-        "job_keywords": jd_keywords,
-        "matched_skills": matched,
-        "missing_keywords": missing_keywords,
-        "match_score": match_score,
-        "final_score": final_score,
-        "scoring_breakdown": scoring_breakdown,
-        "summary": summary
-    }
-
-    with open("review_report.json", "w") as f:
-        json.dump(report, f, indent=4)
-
-    print("\nReport saved to review_report.json")
+ 
+    resume_text = resume_data.get("raw_text", "")
+    resume_skills = [skill.lower() for skill in resume_data.get("skills", [])]
 
 
-if __name__ == "__main__":
-    main()
+    job_keywords = get_keywords_for_job(job_title)
+
+    if not job_keywords:
+        st.warning("No predefined keywords found for this job title. Try another job title.")
+        st.stop()
+
+    st.subheader(f"Keywords for {job_title.title()}")
+    st.write(", ".join(job_keywords))
+
+    # -----------------------------------------------
+    # Matching Logic
+    # -----------------------------------------------
+    matched_keywords = [kw for kw in job_keywords if kw.lower() in resume_text.lower()]
+    missing_keywords = [kw for kw in job_keywords if kw.lower() not in resume_text.lower()]
+
+    match_score = int((len(matched_keywords) / len(job_keywords)) * 100)
+
+    # -----------------------------------------------
+    # Output Section
+    # -----------------------------------------------
+    st.subheader("Resume Match Score")
+    st.progress(match_score)
+    st.write(f"**Match Score: {match_score}%**")
+
+    st.subheader("Matched Keywords")
+    if matched_keywords:
+        st.success(", ".join(matched_keywords))
+    else:
+        st.write("No job-related keywords found.")
+
+    st.subheader("Missing Keywords")
+    if missing_keywords:
+        st.error(", ".join(missing_keywords))
+    else:
+        st.success("Your resume covers all the required keywords!")
+
+    st.subheader("Feedback")
+    if match_score < 50:
+        st.write("🔸 Your resume needs improvement. Add more job-related keywords.")
+    elif 50 <= match_score < 80:
+        st.write("🟡 Good resume, but you can still improve by adding missing keywords.")
+    else:
+        st.write("🟢 Your resume looks strong for this job role!")
+
+else:
+    st.info("Please enter a job title and upload a resume.")
