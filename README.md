@@ -6,15 +6,15 @@ It extracts resume content, compares it with the job description, performs skill
 
 ---
 
-## 🚀 1. Problem Statement
+## 1. Problem Statement
 
 Recruiters often face challenges such as:
 
-- ⏳ Time-consuming manual screening 
-- ❌ Human bias 
-- 🧩 Skill mismatch between resume & job description 
-- 🔍 Inconsistent evaluation 
-- 📄 ATS systems failing due to formatting issues 
+- Time-consuming manual screening 
+- Human bias 
+- Skill mismatch between resume & job description 
+- Inconsistent evaluation 
+- ATS systems failing due to formatting issues 
 
 **Smart Resume Reviewer Agent** solves these problems by providing:
 
@@ -25,7 +25,7 @@ Recruiters often face challenges such as:
 
 ---
 
-## 🤖 2. Why Agents?
+## 2. Why Agents?
 
 A single AI model cannot perform the entire HR evaluation workflow. 
 This system uses **multiple specialized agents**, similar to an HR team:
@@ -40,7 +40,7 @@ Agents communicate with each other and complete the workflow intelligently.
 
 ---
 
-## 🏗️ 3. System Architecture
+##  3. System Architecture
 
 ```
 smart-resume-reviewer/
@@ -66,7 +66,7 @@ smart-resume-reviewer/
 
 ---
 
-## ⚙️ 4. Key Features
+## 4. Key Features
 
 * **Dynamic Role Matching:** The system prompts the user for the **Job Title** and **Job Description** at runtime, allowing it to evaluate candidates for any role, from 'Senior Python Developer' to 'Full Stack Developer'.
 * **Weighted Scoring:** The final match score integrates keyword matching, experience points, and ATS compliance factors for a holistic evaluation.
@@ -75,15 +75,15 @@ smart-resume-reviewer/
 
 ---
 
-## 🧪 5. How It Works
+## 5. How It Works
 
 ### Step-by-step Process
 
-1️⃣ User runs `main.py` and provides:
+1️.User runs `main.py` and provides:
 - Resume filename (e.g., `candidate_a.pdf`)
 - Job description text
 
-2️⃣ Agents start working:
+2️. Agents start working:
 - **JD Analyzer** extracts required skills (e.g., Python, React, AWS).
 - **Resume Parser** extracts all text and skills from the PDF.
 - **Skill Matcher** compares the two lists and calculates the similarity score.
@@ -101,7 +101,7 @@ Final Recommendation: Good candidate for interview
 
 ---
 
-## 🛠️ 6. Tech Stack
+## 6. Tech Stack
 
 - Python  
 - PyPDF2 / pdfplumber  
@@ -112,7 +112,7 @@ Final Recommendation: Good candidate for interview
 
 ---
 
-## 📥 7. Installation & Setup
+## 7. Installation & Setup
 
 ### Create Virtual Environment
 ```
@@ -134,9 +134,15 @@ pip install -r requirements.txt
 python main.py
 ```
 
+![1765035731543](https://github.com/user-attachments/assets/edc96af3-80fb-46ea-b768-c46324d3538c)
+
+
+![1765035731349](https://github.com/user-attachments/assets/9fc72718-bbd2-4b86-860a-5d1758284430)
+
+
 ---
 
-## 📌 8. Future Improvements
+## 8. Future Improvements
 
 - Bulk resume ranking  
 - Bias detection & fairness layer  
@@ -148,7 +154,7 @@ python main.py
 
 ---
 
-## 👨‍💻 9. Author
+## 9. Author
 
 **Bhuvan Patil**  
 AI & Software Development Enthusiast  
@@ -158,4 +164,3 @@ AI & Software Development Enthusiast
 =======
 # smart-resume-reviewer-agent
 The Smart Resume Reviewer is a multi-agent system that scores resumes against any job description, providing a match percentage, skill gap analysis, and a recruiter summary. It uses specialized agents for parsing, keyword analysis, skill matching, and final score calculation.
->>>>>>> 73a28fbe386ee62b2c51b48ea196c4df29dccf80
